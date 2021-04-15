@@ -8,6 +8,10 @@ repositories:
     type: git
     url: https://github.com/autocore-ai/autoware_launcher.ac.universe.git
     version: ros2
+  autoware/individual_params:
+    type: git
+    url: https://github.com/tier4/autoware_individual_params.git
+    version: main
   # description
   description/sensor/sensor_description:
     type: git
@@ -77,8 +81,8 @@ repositories:
     version: master
   vendor/rosbridge_suite:
     type: git
-    url: https://github.com/RobotWebTools/rosbridge_suite.git
-    version: ros2
+    url: https://github.com/tier4/rosbridge_suite.git
+    version: tier4/ros2
   vendor/rosauth:
     type: git
     url: https://github.com/GT-RAIL/rosauth.git
