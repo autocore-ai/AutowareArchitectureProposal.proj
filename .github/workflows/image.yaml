@@ -85,8 +85,8 @@ jobs:
           docker buildx build \
           --output "type=image,push=true" \
           --platform linux/amd64,linux/arm64 \
-          --build-arg IMG_SRC=${{ env.IMG_SRC }}:$(echo ${GITHUB_REF#refs/heads/} \
-          --build-arg IMG_SDK=${{ env.IMG_SDK }}:$(echo ${GITHUB_REF#refs/heads/} \
+          --build-arg IMG_SRC=${{ env.IMG_SRC }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
+          --build-arg IMG_SDK=${{ env.IMG_SDK }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --build-arg REPO=${{ env.REPO }} \
           --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --file docker/exe.dockerfile .
