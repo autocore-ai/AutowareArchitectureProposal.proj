@@ -11,7 +11,8 @@ ENV LC_ALL=C.UTF-8
 COPY docker/rosdep.sh /tmp/rosdep.sh
 RUN apt-get update \
     && cat /tmp/rosdep.sh \
-    && sh /tmp/rosdep.sh \
+    # && sh /tmp/rosdep.sh \
+    && echo $PWD \
     && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     python3-pip \
