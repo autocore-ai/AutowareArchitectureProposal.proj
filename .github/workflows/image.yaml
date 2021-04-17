@@ -1,0 +1,39 @@
+name: IMAGE
+
+on: [push, workflow_dispatch]
+
+env:
+  REPO: https://github.com/${{ github.repository }}
+  IMG_NAME_SRC: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-src
+
+jobs:
+  src:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup ROS
+        uses: ros-tooling/setup-ros@v0.1
+
+      - name: Get Source Code
+        run: mkdir src && vcs import src < autoware.proj.repos
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build and push
+        run: |
+          docker buildx build \
+          --output "type=image,push=true" \
+          --platform linux/amd64,linux/arm64 \
+          --build-arg REPO=${{ env.REPO }} \
+          --tag ${{ env.IMG_NAME_SRC }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
+          --file docker/src.dockerfile .
