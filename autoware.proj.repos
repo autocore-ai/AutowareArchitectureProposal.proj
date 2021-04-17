@@ -3,11 +3,11 @@ repositories:
   autoware/AutowareArchitectureProposal.ac:
     type: git
     url: https://github.com/autocore-ai/AutowareArchitectureProposal.ac.git
-    version: ros2
+    version: sdv
   autoware/launcher:
     type: git
     url: https://github.com/autocore-ai/autoware_launcher.ac.universe.git
-    version: ros2
+    version: sdv
   autoware/individual_params:
     type: git
     url: https://github.com/tier4/autoware_individual_params.git
