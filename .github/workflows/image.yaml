@@ -1,39 +1,88 @@
 name: IMAGE
-
 on: [push, workflow_dispatch]
-
 env:
   REPO: https://github.com/${{ github.repository }}
-  IMG_NAME_SRC: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-src
-
 jobs:
+
   src:
     runs-on: ubuntu-20.04
+    env:
+      IMG_NAME: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-src
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Setup ROS
         uses: ros-tooling/setup-ros@v0.1
-
       - name: Get Source Code
         run: mkdir src && vcs import src < autoware.proj.repos
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_TOKEN }}
+      - name: Build and push src image
+        run: |
+          docker buildx build \
+          --output "type=image,push=true" \
+          --platform linux/amd64,linux/arm64 \
+          --build-arg REPO=${{ env.REPO }} \
+          --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
+          --file docker/src.dockerfile .
 
+  sdk:
+    runs-on: ubuntu-20.04
+    env:
+      IMG_NAME: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-sdk
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
       - name: Build and push
         run: |
           docker buildx build \
           --output "type=image,push=true" \
           --platform linux/amd64,linux/arm64 \
           --build-arg REPO=${{ env.REPO }} \
-          --tag ${{ env.IMG_NAME_SRC }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
-          --file docker/src.dockerfile .
+          --build-arg REF=${{ GITHUB_REF }} \
+          --build-arg SHA=${{ GITHUB_SHA }} \
+          --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
+          --file docker/sdk.dockerfile .
+
+  exe:
+    needs: [src, sdk]
+    runs-on: ubuntu-20.04
+    env:
+      IMG_SRC: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-src
+      IMG_SDK: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-sdk
+      IMG_NAME: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-exe
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - name: Build and push
+        run: |
+          docker buildx build \
+          --output "type=image,push=true" \
+          --platform linux/amd64,linux/arm64 \
+          --build-arg IMG_SRC=${{ env.IMG_SRC }} \
+          --build-arg IMG_SDK=${{ env.IMG_SDK }} \
+          --build-arg REPO=${{ env.REPO }} \
+          --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
+          --file docker/exe.dockerfile .
