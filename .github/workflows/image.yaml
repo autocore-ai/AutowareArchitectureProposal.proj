@@ -53,8 +53,8 @@ jobs:
           --output "type=image,push=true" \
           --platform linux/amd64,linux/arm64 \
           --build-arg REPO=${{ env.REPO }} \
-          --build-arg REF=${{ GITHUB_REF }} \
-          --build-arg SHA=${{ GITHUB_SHA }} \
+          --build-arg REF=${GITHUB_REF} \
+          --build-arg SHA=${GITHUB_SHA} \
           --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --file docker/sdk.dockerfile .
 
