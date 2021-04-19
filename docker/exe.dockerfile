@@ -13,7 +13,5 @@ FROM alpine
 ARG REPO
 LABEL org.opencontainers.image.source ${REPO}
 COPY --from=sdk /AutowareArchitectureProposal/install /AutowareArchitectureProposal/install
-COPY --from=src /AutowareArchitectureProposal.ref /AutowareArchitectureProposal.ref
-COPY --from=src /AutowareArchitectureProposal.ref /AutowareArchitectureProposal/ref
-COPY --from=src /AutowareArchitectureProposal.sha /AutowareArchitectureProposal.sha
-COPY --from=src /AutowareArchitectureProposal.sha /AutowareArchitectureProposal/sha
+COPY --from=sdk /AutowareArchitectureProposal.ref /AutowareArchitectureProposal/ref
+COPY --from=sdk /AutowareArchitectureProposal.sha /AutowareArchitectureProposal/sha
