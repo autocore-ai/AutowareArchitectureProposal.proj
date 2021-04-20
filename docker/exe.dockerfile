@@ -4,6 +4,7 @@ FROM ${IMG_SRC} as src
 FROM ${IMG_SDK} as sdk
 COPY --from=src /AutowareArchitectureProposal /AutowareArchitectureProposal
 RUN cd /AutowareArchitectureProposal && \
+    source "/opt/ros/$ROS_DISTRO/setup.bash" && \
     colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release \
     --catkin-skip-building-tests \
     --packages-up-to \
