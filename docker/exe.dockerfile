@@ -7,7 +7,7 @@ RUN cd /AutowareArchitectureProposal && \
     colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release \
     --catkin-skip-building-tests \
     --packages-up-to \
-    sdv_demo_launcher
+    sdv_demo_launch
 
 FROM alpine
 ARG REPO
