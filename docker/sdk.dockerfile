@@ -10,7 +10,6 @@ ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 COPY docker/rosdep.sh /tmp/rosdep.sh
 RUN apt-get update \
-    && apt-get update -y \
     && sh /tmp/rosdep.sh \
     && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
