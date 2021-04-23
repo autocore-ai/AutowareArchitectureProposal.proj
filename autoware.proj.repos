@@ -3,16 +3,16 @@ repositories:
   autoware/AutowareArchitectureProposal.ac:
     type: git
     url: https://github.com/autocore-ai/AutowareArchitectureProposal.ac.git
-    version: main
+    version: ros2
   autoware/launcher:
     type: git
     url: https://github.com/autocore-ai/autoware_launcher.ac.universe.git
-    version: main
+    version: ros2
   # description
   description/sensor/sensor_description:
     type: git
     url: https://github.com/autocore-ai/sensor_description.ac.universe.git
-    version: main
+    version: ros2
   description/sensor/velodyne_simulator:
     type: git
     url: https://github.com/tier4/velodyne_simulator.git
