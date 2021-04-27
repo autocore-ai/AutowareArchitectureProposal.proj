@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       IMG_NAME: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-src
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -23,11 +26,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_TOKEN }}
-      - name: Build and push src image
+      - name: Build and push src image for ${{ matrix.platform }}
         run: |
           docker buildx build \
           --output "type=image,push=true" \
-          --platform linux/amd64,linux/arm64 \
+          --platform ${{ matrix.platform }} \
           --build-arg REPO=${{ env.REPO }} \
           --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --file docker/src.dockerfile .
@@ -36,6 +39,9 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       IMG_NAME: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-sdk
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -49,11 +55,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_TOKEN }}
-      - name: Build and push
+      - name: Build and push for ${{ matrix.platform }}
         run: |
           docker buildx build \
           --output "type=image,push=true" \
-          --platform linux/amd64,linux/arm64 \
+          --platform ${{ matrix.platform }} \
           --build-arg REPO=${{ env.REPO }} \
           --build-arg REF=${GITHUB_REF} \
           --build-arg SHA=${GITHUB_SHA} \
@@ -67,6 +73,9 @@ jobs:
       IMG_SRC: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-src
       IMG_SDK: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-sdk
       IMG_NAME: ghcr.io/${{ github.repository_owner }}/autoware-architecture-proposal-exe
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -80,11 +89,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_TOKEN }}
-      - name: Build and push
+      - name: Build and push for ${{ matrix.platform }}
         run: |
           docker buildx build \
           --output "type=image,push=true" \
-          --platform linux/amd64,linux/arm64 \
+          --platform ${{ matrix.platform }} \
           --build-arg IMG_SRC=${{ env.IMG_SRC }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --build-arg IMG_SDK=${{ env.IMG_SDK }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --build-arg REPO=${{ env.REPO }} \
