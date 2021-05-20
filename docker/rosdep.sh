@@ -70,6 +70,7 @@ fi
   apt-get install -y ros-foxy-pcl-msgs
   apt-get install -y ros-foxy-python-qt-binding
   apt-get install -y ros-foxy-qt-gui
+  apt-get install -y ros-foxy-rmw-cyclonedds-cpp
   apt-get install -y ros-foxy-rqt-gui
   apt-get install -y ros-foxy-rqt-gui-py
   apt-get install -y ros-foxy-rqt-reconfigure
