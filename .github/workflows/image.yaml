@@ -3,7 +3,6 @@ on: [push, workflow_dispatch]
 env:
   REPO: https://github.com/${{ github.repository }}
 jobs:
-
   src:
     runs-on: self-hosted
     env:
@@ -24,9 +23,12 @@ jobs:
       - name: Build and push src image
         run: |
           docker buildx build \
-          --output "type=image,push=true" \
+          --output type=registry \
           --platform linux/amd64,linux/arm64 \
           --build-arg REPO=${{ env.REPO }} \
+          --build-arg http_proxy=$http_proxy \
+          --build-arg https_proxy=$https_proxy \
+          --build-arg no_proxy=$no_proxy \
           --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --file docker/src.dockerfile .
 
@@ -46,11 +48,14 @@ jobs:
       - name: Build and push
         run: |
           docker buildx build \
-          --output "type=image,push=true" \
+          --output type=registry \
           --platform linux/amd64,linux/arm64 \
           --build-arg REPO=${{ env.REPO }} \
           --build-arg REF=${GITHUB_REF} \
           --build-arg SHA=${GITHUB_SHA} \
+          --build-arg http_proxy=$http_proxy \
+          --build-arg https_proxy=$https_proxy \
+          --build-arg no_proxy=$no_proxy \
           --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --file docker/sdk.dockerfile .
 
@@ -73,10 +78,13 @@ jobs:
       - name: Build and push
         run: |
           docker buildx build \
-          --output "type=image,push=true" \
+          --output type=registry \
           --platform linux/amd64,linux/arm64 \
           --build-arg IMG_SRC=${{ env.IMG_SRC }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --build-arg IMG_SDK=${{ env.IMG_SDK }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --build-arg REPO=${{ env.REPO }} \
+          --build-arg http_proxy=$http_proxy \
+          --build-arg https_proxy=$https_proxy \
+          --build-arg no_proxy=$no_proxy \
           --tag ${{ env.IMG_NAME }}:$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g') \
           --file docker/exe.dockerfile .
