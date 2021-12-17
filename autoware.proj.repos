@@ -2,7 +2,7 @@ repositories:
   # autoware
   autoware/autoware.iv:
     type: git
-    url: https://github.com/tier4/AutowareArchitectureProposal.iv.git
+    url: https://github.com/autocore-ai/AutowareArchitectureProposal.iv.git
     version: main
   autoware/launcher:
     type: git
