@@ -18,6 +18,14 @@ repositories:
     url: git@github.com:tier4/lexus_description.iv.universe.git
     version: master 
   # simulator
+  simulator/autoware_msgs:
+    type: git
+    url: git@github.com:autocore-ai/autoware_msgs.git
+    version: main
+  simulator/lgsvl_simulator:
+    type: git
+    url: git@github.com:autocore-ai/lgsvl_simulator.git
+    version: main
   simulator/planning_simulator:
     type: git
     url: git@github.com:tier4/planning_simulator.iv.universe.git
